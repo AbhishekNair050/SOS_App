@@ -1,0 +1,22 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background shape -->
+    <item android:bottom="2dp" android:left="2dp" android:right="2dp" android:top="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#000000" /> <!-- Black background -->
+            <corners android:radius="8dp" /> <!-- Rounded corners -->
+        </shape>
+    </item>
+
+    <!-- Circular shape with border -->
+    <item
+        android:gravity="center"
+        android:left="20sp"
+        android:right="20sp"
+        android:top="15sp"
+        android:bottom="33sp">
+        <shape android:shape="oval">
+            <solid android:color="@color/white" /> <!-- White circle -->
+            <stroke android:width="4dp" android:color="#FF0000" /> <!-- Red border -->
+        </shape>
+    </item>
+</layer-list>
