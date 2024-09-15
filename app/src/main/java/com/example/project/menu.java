@@ -41,10 +41,10 @@ public class menu extends AppCompatActivity {
         try {
             if (isTorchOn) {
                 cameraManager.setTorchMode(cameraID, false); // Turn off
-                button.setText("Flashight On");
+                button.setText("Flashlight");
             } else {
                 cameraManager.setTorchMode(cameraID, true); // Turn on
-                button.setText("Flashlight");
+                button.setText("Flashlight On");
             }
             isTorchOn = !isTorchOn; // Flip the state
         } catch (CameraAccessException e) {
