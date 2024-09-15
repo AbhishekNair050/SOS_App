@@ -46,10 +46,11 @@
         app:layout_constraintVertical_bias="0.129" />
 
     <Button
-        android:id="@+id/imageView2"
+        android:id="@+id/instructionButton"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:background="@drawable/instruction_logo"
+        android:onClick="instructions"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.18"
@@ -58,7 +59,7 @@
         app:layout_constraintVertical_bias="0.177" />
 
     <Button
-        android:id="@+id/imageViewContact"
+        android:id="@+id/ContactButton"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:background="@drawable/contact_logo"

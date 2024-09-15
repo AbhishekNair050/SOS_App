@@ -2,6 +2,7 @@ package com.example.project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -22,5 +23,9 @@ public class menu extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+    public void instructions(View view) {
+        Intent intent = new Intent(this, instructions.class);
+        startActivity(intent);
     }
 }
