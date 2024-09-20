@@ -7,6 +7,7 @@ public class SessionManager {
     private static final String PREF_NAME = "LoginSession";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_SOS_MESSAGE = "sosMessage";
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private Context context;
@@ -29,6 +30,15 @@ public class SessionManager {
 
     public String getUserEmail() {
         return pref.getString(KEY_EMAIL, null);
+    }
+
+    public void saveSOSMessage(String message) {
+        editor.putString(KEY_SOS_MESSAGE, message);
+        editor.commit();
+    }
+
+    public String getSOSMessage() {
+        return pref.getString(KEY_SOS_MESSAGE, null);
     }
 
     public void logoutUser() {
