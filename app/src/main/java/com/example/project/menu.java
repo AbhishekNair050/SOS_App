@@ -55,4 +55,8 @@ public class menu extends AppCompatActivity {
         Intent intent = new Intent(this, instructions.class);
         startActivity(intent);
     }
+    public void Editsos(View view) {
+        Intent intent = new Intent(this, EditSOS.class);
+        startActivity(intent);
+    }
 }

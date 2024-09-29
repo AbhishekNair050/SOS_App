@@ -31,6 +31,8 @@
             android:exported="true" />
         <activity android:name=".instructions"
             android:exported="true" />
+        <activity android:name=".EditSOS"
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"
