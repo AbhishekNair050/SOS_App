@@ -31,6 +31,11 @@ public class EmergencyServices extends AppCompatActivity {
         services.add(new EmergencyService("Women Department", "1091"));
         services.add(new EmergencyService("Ambulance", "102"));
         services.add(new EmergencyService("Fire", "101"));
+        services.add(new EmergencyService("Child Helpline", "1098"));
+        services.add(new EmergencyService("Senior Citizen Helpline", "1090"));
+        services.add(new EmergencyService("Disaster Management", "108"));
+        services.add(new EmergencyService("Railway Enquiry", "139"));
+        services.add(new EmergencyService("Road Accident Emergency Service", "1073"));
 
         EmergencyServiceAdapter adapter = new EmergencyServiceAdapter(this, services);
         listView.setAdapter(adapter);

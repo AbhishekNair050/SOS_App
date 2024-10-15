@@ -59,4 +59,12 @@ public class menu extends AppCompatActivity {
         Intent intent = new Intent(this, EditSOS.class);
         startActivity(intent);
     }
+    public void EmergencyServices(View view) {
+        Intent intent = new Intent(this, EmergencyServices.class);
+        startActivity(intent);
+    }
+    public void EmergencyContacts(View view) {
+        Intent intent = new Intent(this, EmergenceyContact.class);
+        startActivity(intent);
+    }
 }
