@@ -14,8 +14,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class MainActivity extends AppCompatActivity {
-    private DatabaseHelper dbHelper;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     private SessionManager sessionManager;
 
     @Override
@@ -23,7 +31,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        dbHelper = new DatabaseHelper(this);
+        FirebaseApp.initializeApp(this);
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        firebaseAppCheck.installAppCheckProviderFactory(
+                PlayIntegrityAppCheckProviderFactory.getInstance()
+        );
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         sessionManager = new SessionManager(this);
 
         if (sessionManager.isLoggedIn()) {
@@ -34,14 +48,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         TextView tv = findViewById(R.id.tv4);
-
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, register.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
-            }
+        tv.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, register.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -57,14 +67,18 @@ public class MainActivity extends AppCompatActivity {
         String email = et1.getText().toString();
         String password = et2.getText().toString();
 
-        if (dbHelper.checkUser(email, password)) {
-            sessionManager.createLoginSession(email);
-            Intent intent = new Intent(this, home.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
-        }
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        sessionManager.createLoginSession(email);
+                        Intent intent = new Intent(this, home.class);
+                        intent.putExtra("email", email);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

@@ -12,8 +12,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class home extends AppCompatActivity {
     private SessionManager sessionManager;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +29,25 @@ public class home extends AppCompatActivity {
         setContentView(R.layout.homepage);
 
         sessionManager = new SessionManager(this);
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         String email = getIntent().getStringExtra("email");
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        String userName = dbHelper.getUserNameByEmail(email);
+        FirebaseUser user = mAuth.getCurrentUser();
 
-        TextView usernameTextView = findViewById(R.id.usernameTextView);
-        usernameTextView.setText("Welcome " + userName);
+        if (user != null) {
+            db.collection("users").document(user.getUid()).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                String userName = document.getString("name");
+                                TextView usernameTextView = findViewById(R.id.usernameTextView);
+                                usernameTextView.setText("Welcome " + userName);
+                            }
+                        }
+                    });
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main2), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -44,6 +63,7 @@ public class home extends AppCompatActivity {
 
     public void logout(View view) {
         sessionManager.logoutUser();
+        mAuth.signOut();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();

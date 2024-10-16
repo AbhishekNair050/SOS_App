@@ -1,9 +1,7 @@
 // app/src/main/java/com/example/project/register.java
 package com.example.project;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -16,18 +14,24 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class register extends AppCompatActivity {
-    private DatabaseHelper dbHelper;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.create_account);
-        dbHelper = new DatabaseHelper(this);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         TextView tv = findViewById(R.id.tvp1);
-
         tv.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -62,20 +66,25 @@ public class register extends AppCompatActivity {
             return;
         }
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_NAME, name);
-        values.put(DatabaseHelper.COLUMN_EMAIL, email);
-        values.put(DatabaseHelper.COLUMN_PASSWORD, password);
-
-        long newRowId = db.insert(DatabaseHelper.TABLE_USER, null, values);
-        if (newRowId != -1) {
-            Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
-        } else {
-            Toast.makeText(this, "Error creating account", Toast.LENGTH_SHORT).show();
-        }
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        User newUser = new User(name, email);
+                        db.collection("users").document(user.getUid()).set(newUser)
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(register.this, "Account created successfully. Please log in.", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(this, MainActivity.class);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
+                                    finish(); // Close the register activity
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(register.this, "Error creating account: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    } else {
+                        Toast.makeText(register.this, "Error creating account: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
