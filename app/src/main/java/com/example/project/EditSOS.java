@@ -27,9 +27,7 @@ public class EditSOS extends AppCompatActivity {
 
         // Load saved SOS message
         String savedMessage = sessionManager.getSOSMessage();
-        if (savedMessage != null) {
-            editTextSOSMessage.setText(savedMessage);
-        }
+        editTextSOSMessage.setText(savedMessage);
 
         buttonSaveSOSMessage.setOnClickListener(v -> {
             String sosMessage = editTextSOSMessage.getText().toString();
