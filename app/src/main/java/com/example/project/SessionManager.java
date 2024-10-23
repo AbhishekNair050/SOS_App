@@ -38,7 +38,11 @@ public class SessionManager {
     }
 
     public String getSOSMessage() {
-        return pref.getString(KEY_SOS_MESSAGE, null);
+        String sosMessage = pref.getString(KEY_SOS_MESSAGE, null);
+        if (sosMessage == null || sosMessage.isEmpty()) {
+            return "EMERGENCY";
+        }
+        return sosMessage;
     }
 
     public void logoutUser() {

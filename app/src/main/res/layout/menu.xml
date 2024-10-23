@@ -4,262 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/main3"
-    android:background="@drawable/menu_bg"
+    android:background="@drawable/background_menu"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/emergencyContactButton"
-        android:layout_width="154dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/menu_btn"
-        android:fontFamily="@font/purple_purse"
-        android:onClick="EmergencyContacts"
-        android:paddingTop="115dp"
-        android:text="Emergency Contact"
-        android:textColor="#CED0CE"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.927"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.129" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/menuButton"
-        android:layout_width="154dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/menu_btn"
-        android:fontFamily="@font/purple_purse"
-        android:onClick="instructions"
-        android:paddingTop="115dp"
-        android:text="Instructions"
-        android:textColor="#CED0CE"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.129" />
 
     <Button
         android:id="@+id/instructionButton"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:background="@drawable/instruction_logo"
+        android:layout_width="112dp"
+        android:layout_height="118dp"
+        android:background="@drawable/transparent_btn"
         android:onClick="instructions"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.18"
+        app:layout_constraintHorizontal_bias="0.135"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.177" />
+        app:layout_constraintVertical_bias="0.126" />
+
 
     <Button
         android:id="@+id/ContactButton"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="112dp"
+        android:layout_height="118dp"
+        android:background="@drawable/transparent_btn"
         android:onClick="EmergencyContacts"
-        android:background="@drawable/contact_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.858"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.183" />
+        app:layout_constraintVertical_bias="0.126" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/geoFencingButton"
-        android:layout_width="154dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/menu_btn"
-        android:fontFamily="@font/purple_purse"
-        android:onClick="geo_fencing"
-        android:paddingTop="115dp"
-        android:text="Geo Fencing"
-        android:textColor="#CED0CE"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.927"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.403" />
 
     <Button
         android:id="@+id/imageViewGeoFencing"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@drawable/geofencing_logo"
+        android:layout_width="114dp"
+        android:layout_height="119dp"
+        android:background="@drawable/transparent_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.803"
+        app:layout_constraintHorizontal_bias="0.865"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.419" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/editSosMessageButton"
-        android:layout_width="154dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/menu_btn"
-        android:fontFamily="@font/purple_purse"
-        android:onClick="Editsos"
-        android:paddingTop="115dp"
-        android:text="Edit SOS Message"
-        android:textColor="#CED0CE"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.403" />
+        app:layout_constraintVertical_bias="0.405" />
 
     <Button
         android:id="@+id/imageViewEditSos"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:background="@drawable/edid_sos_logo"
+        android:layout_width="107dp"
+        android:layout_height="112dp"
+        android:background="@drawable/transparent_btn"
         android:onClick="Editsos"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.203"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.422" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/voiceAlertButton"
-        android:layout_width="154dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/menu_btn"
-        android:fontFamily="@font/purple_purse"
-        android:onClick="voice_alert"
-        android:paddingTop="115dp"
-        android:text="Voice Alert"
-        android:textColor="#CED0CE"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.927"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.671" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/emergencyServicesButton"
-        android:layout_width="154dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/menu_btn"
-        android:fontFamily="@font/purple_purse"
-        android:onClick="EmergencyServices"
-        android:paddingTop="115dp"
-        android:text="Emergency Services"
-        android:textColor="#CED0CE"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.671" />
+        app:layout_constraintVertical_bias="0.401" />
 
     <Button
         android:id="@+id/imageViewEmergencyService"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="109dp"
+        android:layout_height="117dp"
+        android:background="@drawable/transparent_btn"
         android:onClick="EmergencyServices"
-        android:background="@drawable/emergency_services_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.143"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.647" />
+        app:layout_constraintVertical_bias="0.672" />
+
 
     <Button
-        android:id="@+id/imageViewVoiceAlert"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:background="@drawable/voice_alert_logo"
+        android:id="@+id/EmergencyLocationButton"
+        android:layout_width="116dp"
+        android:layout_height="117dp"
+        android:background="@drawable/transparent_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.814"
+        app:layout_constraintHorizontal_bias="0.856"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.647" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/flashlightButton"
-        android:layout_width="154dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/menu_btn"
-        android:fontFamily="@font/purple_purse"
-        android:onClick="toggleTorch"
-        android:paddingTop="115dp"
-        android:text="Flashlight"
-        android:textColor="#CED0CE"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.944" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/videoAlertButton"
-        android:layout_width="154dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/menu_btn"
-        android:fontFamily="@font/purple_purse"
-        android:onClick="video_alert"
-        android:paddingTop="115dp"
-        android:text="Video Alert"
-        android:textColor="#CED0CE"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.927"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.944" />
+        app:layout_constraintVertical_bias="0.672" />
 
     <Button
         android:id="@+id/imageViewFlashLight"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:background="@drawable/flashlight_logo"
+        android:layout_width="111dp"
+        android:layout_height="119dp"
+        android:background="@drawable/transparent_btn"
         android:onClick="toggleTorch"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.189"
+        app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.886" />
+        app:layout_constraintVertical_bias="0.942" />
 
     <Button
-        android:id="@+id/imageViewVideoAlert"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:background="@drawable/video_alert_logo"
+        android:id="@+id/MedicationsButton"
+        android:layout_width="118dp"
+        android:layout_height="119dp"
+        android:background="@drawable/transparent_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.88"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.886" />
+        app:layout_constraintVertical_bias="0.942" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

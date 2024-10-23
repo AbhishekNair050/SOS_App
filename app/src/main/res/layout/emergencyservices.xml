@@ -5,12 +5,13 @@
     android:id="@+id/main6"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/page_bg_1">
+    android:background="@drawable/background">
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="285dp"
         android:layout_height="594dp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.506"
