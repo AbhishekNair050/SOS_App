@@ -14,8 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 public class EmergenceyContact extends AppCompatActivity {
-    private ArrayList<Contact> contacts;
+    private static ArrayList<Contact> contacts;
     private ContactAdapter contactAdapter;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +24,12 @@ public class EmergenceyContact extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.emergencycontacts);
 
-        contacts = new ArrayList<>();
+        sessionManager = new SessionManager(this);
+        contacts = sessionManager.getContacts();
+        if (contacts == null) {
+            contacts = new ArrayList<>();
+        }
+
         contactAdapter = new ContactAdapter(this, contacts);
 
         ListView listView = findViewById(R.id.contactListView);
@@ -51,10 +57,15 @@ public class EmergenceyContact extends AppCompatActivity {
             if (!name.isEmpty() && !number.isEmpty()) {
                 contacts.add(new Contact(name, number));
                 contactAdapter.notifyDataSetChanged();
+                sessionManager.saveContacts(contacts);
                 alertDialog.dismiss();
             }
         });
 
         alertDialog.show();
+    }
+
+    public static ArrayList<Contact> getContacts() {
+        return contacts;
     }
 }

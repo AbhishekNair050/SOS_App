@@ -2,12 +2,17 @@ package com.example.project;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class SessionManager {
     private static final String PREF_NAME = "LoginSession";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_SOS_MESSAGE = "sosMessage";
+    private static final String KEY_CONTACTS = "contacts";
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private Context context;
@@ -43,6 +48,20 @@ public class SessionManager {
             return "EMERGENCY";
         }
         return sosMessage;
+    }
+
+    public void saveContacts(ArrayList<Contact> contacts) {
+        Gson gson = new Gson();
+        String json = gson.toJson(contacts);
+        editor.putString(KEY_CONTACTS, json);
+        editor.commit();
+    }
+
+    public ArrayList<Contact> getContacts() {
+        Gson gson = new Gson();
+        String json = pref.getString(KEY_CONTACTS, null);
+        Type type = new TypeToken<ArrayList<Contact>>() {}.getType();
+        return gson.fromJson(json, type);
     }
 
     public void logoutUser() {

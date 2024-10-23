@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/project/home.java
 package com.example.project;
 
 import android.Manifest;
@@ -27,6 +26,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 
 public class home extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -81,6 +82,7 @@ public class home extends AppCompatActivity {
             }
         });
     }
+
     private void getLocationAndSendSms() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -95,7 +97,8 @@ public class home extends AppCompatActivity {
                     if (ActivityCompat.checkSelfPermission(home.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(home.this, new String[]{Manifest.permission.SEND_SMS}, REQUEST_SEND_SMS_PERMISSION);
                     } else {
-                        sendSms(sosMessage + " " + locationLink);
+                        ArrayList<Contact> contacts = sessionManager.getContacts();
+                        sendSmsToContacts(sosMessage + " " + locationLink, contacts);
                     }
                 } else {
                     Toast.makeText(home.this, "Failed to get location", Toast.LENGTH_SHORT).show();
@@ -104,10 +107,11 @@ public class home extends AppCompatActivity {
         });
     }
 
-    private void sendSms(String message) {
+    private void sendSmsToContacts(String message, ArrayList<Contact> contacts) {
         SmsManager smsManager = SmsManager.getDefault();
-        String phoneNumber = "9930508280"; // Replace with the actual phone number
-        smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+        for (Contact contact : contacts) {
+            smsManager.sendTextMessage(contact.getNumber(), null, message, null, null);
+        }
         Toast.makeText(this, "SOS message sent via SMS", Toast.LENGTH_SHORT).show();
     }
 
@@ -130,7 +134,8 @@ public class home extends AppCompatActivity {
                         if (task.isSuccessful() && task.getResult() != null) {
                             Location location = task.getResult();
                             String locationLink = "https://maps.google.com/?q=" + location.getLatitude() + "," + location.getLongitude();
-                            sendSms(sosMessage + " " + locationLink);
+                            ArrayList<Contact> contacts = sessionManager.getContacts();
+                            sendSmsToContacts(sosMessage + " " + locationLink, contacts);
                         }
                     }
                 });
@@ -139,6 +144,7 @@ public class home extends AppCompatActivity {
             }
         }
     }
+
     public void menu(View view) {
         Intent intent = new Intent(this, menu.class);
         startActivity(intent);
