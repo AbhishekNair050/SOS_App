@@ -1,5 +1,7 @@
 package com.example.project;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ public class EditSOS extends AppCompatActivity {
     private SessionManager sessionManager;
     private EditText editTextSOSMessage;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +27,20 @@ public class EditSOS extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         editTextSOSMessage = findViewById(R.id.editTextSOSMessage);
         Button buttonSaveSOSMessage = findViewById(R.id.buttonSaveSOSMessage);
+
+        Button home = findViewById(R.id.buttonHome);
+        Button menu = findViewById(R.id.buttonMenu);
+        Button profile = findViewById(R.id.buttonProfile);
+
+        home.setOnClickListener(v -> {
+            Intent intent = new Intent(EditSOS.this, home.class);
+            startActivity(intent);
+        });
+
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(EditSOS.this, menu.class);
+            startActivity(intent);
+        });
 
         // Load saved SOS message
         String savedMessage = sessionManager.getSOSMessage();
