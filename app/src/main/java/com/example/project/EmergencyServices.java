@@ -19,12 +19,6 @@ public class EmergencyServices extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.emergencyservices);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main6), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
         ListView listView = findViewById(R.id.listView);
         List<EmergencyService> services = new ArrayList<>();
         services.add(new EmergencyService("Police", "100"));

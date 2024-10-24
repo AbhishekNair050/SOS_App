@@ -35,10 +35,5 @@ public class EditSOS extends AppCompatActivity {
             Toast.makeText(EditSOS.this, "SOS message saved", Toast.LENGTH_SHORT).show();
         });
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main5), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
 }

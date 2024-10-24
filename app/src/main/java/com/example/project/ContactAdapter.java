@@ -15,10 +15,12 @@ import java.util.ArrayList;
 public class ContactAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Contact> contacts;
+    private SessionManager sessionManager;
 
     public ContactAdapter(Context context, ArrayList<Contact> contacts) {
         this.context = context;
         this.contacts = contacts;
+        this.sessionManager = new SessionManager(context);
     }
 
     @Override
@@ -55,6 +57,7 @@ public class ContactAdapter extends BaseAdapter {
         deleteButton.setOnClickListener(v -> {
             contacts.remove(position);
             notifyDataSetChanged();
+            sessionManager.saveContacts(contacts); // Save updated contacts list to SessionManager
         });
 
         return convertView;
@@ -83,6 +86,7 @@ public class ContactAdapter extends BaseAdapter {
                 contact.setName(name);
                 contact.setNumber(number);
                 notifyDataSetChanged();
+                sessionManager.saveContacts(contacts); // Save updated contacts list to SessionManager
                 alertDialog.dismiss();
             }
         });
