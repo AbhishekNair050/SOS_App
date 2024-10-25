@@ -7,6 +7,7 @@ import android.hardware.camera2.CameraManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
@@ -120,6 +121,10 @@ public class menu extends AppCompatActivity {
     }
     public void Medication(View view) {
         Intent intent = new Intent(this, Medication.class);
+        startActivity(intent);
+    }
+    public void EmergencyLocation(View view) {
+        Intent intent = new Intent(this, EmergencyLocation.class);
         startActivity(intent);
     }
 }

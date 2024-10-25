@@ -54,6 +54,8 @@
             android:exported="true" />
         <activity android:name=".Medication"
             android:exported="true" />
+        <activity android:name=".EmergencyLocation"
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"
