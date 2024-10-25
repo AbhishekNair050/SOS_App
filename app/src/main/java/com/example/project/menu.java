@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,8 @@ public class menu extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private Handler handler = new Handler();
     private Runnable blinkRunnable;
+    private AudioManager audioManager;
+    private int originalVolume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class menu extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.menu);
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         try {
             cameraID = cameraManager.getCameraIdList()[0];
         } catch (CameraAccessException e) {
@@ -48,6 +52,12 @@ public class menu extends AppCompatActivity {
             mediaPlayer = MediaPlayer.create(this, R.raw.siren);
             mediaPlayer.setLooping(true);
         }
+
+        // Save the current volume and set to maximum
+        originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
+
         mediaPlayer.start();
 
         blinkRunnable = new Runnable() {
@@ -86,6 +96,9 @@ public class menu extends AppCompatActivity {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+
+        // Restore the original volume
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
     }
 
     public void toggleTorch(View view) {
