@@ -118,4 +118,8 @@ public class menu extends AppCompatActivity {
         Intent intent = new Intent(this, EmergenceyContact.class);
         startActivity(intent);
     }
+    public void Medication(View view) {
+        Intent intent = new Intent(this, Medication.class);
+        startActivity(intent);
+    }
 }

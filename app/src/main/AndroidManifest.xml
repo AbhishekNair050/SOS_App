@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -24,6 +26,7 @@
         android:theme="@style/Theme.Project"
         tools:ignore="ExtraText">
         tools:targetApi="31">
+        <receiver android:name=".NotificationReceiver" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -48,6 +51,8 @@
         <activity android:name=".EmergencyServices"
             android:exported="true" />
         <activity android:name=".EmergenceyContact"
+            android:exported="true" />
+        <activity android:name=".Medication"
             android:exported="true" />
 
         <meta-data

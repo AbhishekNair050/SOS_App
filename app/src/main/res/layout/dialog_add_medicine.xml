@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Medicine Details"
+        android:padding="16dp"
+        android:fontFamily="@font/dm_sans_black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_gravity="center" />
+
+    <EditText
+        android:id="@+id/medicineName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittexttheme"
+        android:gravity="center"
+        android:padding="16sp"
+        android:hint="Medicine Name" />
+
+    <EditText
+        android:id="@+id/dosage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittexttheme"
+        android:gravity="center"
+        android:padding="16sp"
+        android:hint="Dosage" />
+
+    <EditText
+        android:id="@+id/timesPerDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittexttheme"
+        android:gravity="center"
+        android:padding="16sp"
+        android:hint="Times per Day" />
+
+    <EditText
+        android:id="@+id/timings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"        android:background="@drawable/edittexttheme"
+        android:gravity="center"
+        android:padding="16sp"
+
+        android:hint="Timings (comma separated)" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/addMedicineButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/login_button"
+        android:text="Add Medicine"
+        android:gravity="center"
+        android:padding="16sp"
+        android:textColor="@color/white" />
+</LinearLayout>

@@ -13,6 +13,7 @@ public class SessionManager {
     private static final String KEY_EMAIL = "email";
     private static final String KEY_SOS_MESSAGE = "sosMessage";
     private static final String KEY_CONTACTS = "contacts";
+    private static final String KEY_MEDICINES = "medicines";
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private Context context;
@@ -68,4 +69,18 @@ public class SessionManager {
         editor.clear();
         editor.commit();
     }
+    public void saveMedicines(ArrayList<Medicine> medicines) {
+        Gson gson = new Gson();
+        String json = gson.toJson(medicines);
+        editor.putString(KEY_MEDICINES, json);
+        editor.commit();
+    }
+
+    public ArrayList<Medicine> getMedicines() {
+        Gson gson = new Gson();
+        String json = pref.getString(KEY_MEDICINES, null);
+        Type type = new TypeToken<ArrayList<Medicine>>() {}.getType();
+        return gson.fromJson(json, type);
+    }
+
 }

@@ -1,7 +1,10 @@
 // app/src/main/java/com/example/project/MainActivity.java
 package com.example.project;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.view.View;
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         sessionManager = new SessionManager(this);
+        createNotificationChannel();
 
         if (sessionManager.isLoggedIn()) {
             Intent intent = new Intent(this, home.class);
@@ -80,5 +84,18 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    "medicineChannel",
+                    "Medicine Reminder",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Channel for medicine reminders");
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
     }
 }

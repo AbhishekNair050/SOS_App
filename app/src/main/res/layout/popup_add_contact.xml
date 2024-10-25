@@ -18,13 +18,13 @@
         android:id="@+id/contactName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"
-        android:padding="15dp"
-        android:textAlignment="center"
-        android:fontFamily="@font/dm_sans_black"
+        android:layout_marginTop="16dp"
         android:background="@drawable/edittexttheme"
+        android:fontFamily="@font/dm_sans_black"
+        android:hint="Name"
         android:inputType="textPersonName"
-        android:layout_marginTop="16dp" />
+        android:padding="15dp"
+        android:textAlignment="center" />
 
     <EditText
         android:id="@+id/contactNumber"
