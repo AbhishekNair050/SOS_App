@@ -82,7 +82,7 @@
         app:layout_constraintVertical_bias="0.331" />
 
     <TextView
-        android:id="@+id/tv2"
+        android:id="@+id/forgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/dm_serif_display"
@@ -156,6 +156,7 @@
         android:background="@drawable/circular_background"
         android:padding="8dp"
         android:src="@drawable/twitter_icon"
+        android:id="@+id/imageViewTwitter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.467"
@@ -169,6 +170,7 @@
         android:layout_marginTop="86dp"
         android:background="@drawable/circular_background"
         android:src="@drawable/google_icon"
+        android:id="@+id/imageViewGoogle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.222"
@@ -182,6 +184,7 @@
         android:background="@drawable/circular_background"
         android:padding="8dp"
         android:src="@drawable/facebook_icon"
+        android:id="@+id/imageViewFacebook"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.708"

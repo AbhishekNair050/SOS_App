@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,11 +53,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         TextView tv = findViewById(R.id.tv4);
+        TextView ForgotPassword = findViewById(R.id.forgotPassword);
+        ForgotPassword.setOnClickListener(v -> {
+            ForgotPasswordDialogFragment dialog = new ForgotPasswordDialogFragment();
+            dialog.show(getSupportFragmentManager(), "ForgotPasswordDialogFragment");
+        });
         tv.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, register.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
         });
+
+        ImageView Google = findViewById(R.id.imageViewGoogle);
+        ImageView Facebook = findViewById(R.id.imageViewFacebook);
+        ImageView Twitter = findViewById(R.id.imageViewTwitter);
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
