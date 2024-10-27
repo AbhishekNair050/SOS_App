@@ -22,7 +22,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import android.os.Vibrator;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -161,10 +160,23 @@ public class home extends AppCompatActivity {
     }
 
     public void logout(View view) {
+        FirebaseUser user1 = mAuth.getCurrentUser();
+        if (user1 != null) {
+            sessionManager.saveDataToFirebase(user1.getUid());
+        }
         sessionManager.logoutUser();
         mAuth.signOut();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            sessionManager.saveDataToFirebase(user.getUid());
+        }
     }
 }

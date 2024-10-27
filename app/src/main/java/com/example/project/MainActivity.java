@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/project/MainActivity.java
 package com.example.project;
 
 import android.app.NotificationChannel;
@@ -96,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-    // app/src/main/java/com/example/project/MainActivity.java
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -125,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         sessionManager.createLoginSession(user.getEmail());
+                        sessionManager.loadDataFromFirebase(user.getUid());
                         Intent intent = new Intent(this, home.class);
                         intent.putExtra("email", user.getEmail());
                         startActivity(intent);
@@ -146,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         sessionManager.createLoginSession(email);
+                        sessionManager.loadDataFromFirebase(user.getUid());
                         Intent intent = new Intent(this, home.class);
                         intent.putExtra("email", email);
                         startActivity(intent);

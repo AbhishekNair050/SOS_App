@@ -13,9 +13,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class EditSOS extends AppCompatActivity {
     private SessionManager sessionManager;
     private EditText editTextSOSMessage;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -23,7 +27,6 @@ public class EditSOS extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.editsos);
-
         sessionManager = new SessionManager(this);
         editTextSOSMessage = findViewById(R.id.editTextSOSMessage);
         Button buttonSaveSOSMessage = findViewById(R.id.buttonSaveSOSMessage);

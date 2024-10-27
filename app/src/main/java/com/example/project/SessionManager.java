@@ -1,11 +1,16 @@
+// SessionManager.java
 package com.example.project;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SessionManager {
     private static final String PREF_NAME = "LoginSession";
@@ -17,11 +22,13 @@ public class SessionManager {
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private Context context;
+    private DatabaseReference databaseReference;
 
     public SessionManager(Context context) {
         this.context = context;
         pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
     }
 
     public void createLoginSession(String email) {
@@ -65,10 +72,6 @@ public class SessionManager {
         return gson.fromJson(json, type);
     }
 
-    public void logoutUser() {
-        editor.clear();
-        editor.commit();
-    }
     public void saveMedicines(ArrayList<Medicine> medicines) {
         Gson gson = new Gson();
         String json = gson.toJson(medicines);
@@ -83,4 +86,43 @@ public class SessionManager {
         return gson.fromJson(json, type);
     }
 
+    public void logoutUser() {
+        editor.clear();
+        editor.commit();
+    }
+
+    public void saveDataToFirebase(String userId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(KEY_EMAIL, getUserEmail());
+        data.put(KEY_SOS_MESSAGE, getSOSMessage());
+        data.put(KEY_CONTACTS, getContacts());
+        data.put(KEY_MEDICINES, getMedicines());
+
+        databaseReference.child(userId).setValue(data)
+                .addOnSuccessListener(aVoid -> {
+                    System.out.println("DocumentSnapshot successfully written!");
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("Error writing document: " + e);
+                });
+    }
+
+    public void loadDataFromFirebase(String userId) {
+        databaseReference.child(userId).get()
+                .addOnSuccessListener(dataSnapshot -> {
+                    if (dataSnapshot.exists()) {
+                        editor.putString(KEY_EMAIL, dataSnapshot.child(KEY_EMAIL).getValue(String.class));
+                        editor.putString(KEY_SOS_MESSAGE, dataSnapshot.child(KEY_SOS_MESSAGE).getValue(String.class));
+                        Gson gson = new Gson();
+                        String contactsJson = gson.toJson(dataSnapshot.child(KEY_CONTACTS).getValue());
+                        editor.putString(KEY_CONTACTS, contactsJson);
+                        String medicinesJson = gson.toJson(dataSnapshot.child(KEY_MEDICINES).getValue());
+                        editor.putString(KEY_MEDICINES, medicinesJson);
+                        editor.commit();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Error getting document
+                });
+    }
 }

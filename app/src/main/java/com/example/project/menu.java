@@ -40,6 +40,7 @@ public class menu extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main3), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

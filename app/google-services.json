@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "292406745942",
+    "firebase_url": "https://sosapp-89cc1-default-rtdb.firebaseio.com",
     "project_id": "sosapp-89cc1",
     "storage_bucket": "sosapp-89cc1.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "292406745942-2sn9na50r3oamjnt8otkspigdm4k2g8d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project",
+            "certificate_hash": "ece019e28a1034102aacaa51b36f14763744a564"
+          }
+        },
         {
           "client_id": "292406745942-fau9tad9seoh1jcvlenh4cqev254m14p.apps.googleusercontent.com",
           "client_type": 3
