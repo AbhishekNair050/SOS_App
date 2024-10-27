@@ -7,18 +7,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="Medication"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:fontFamily="@font/dm_sans_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.04000002" />
+
     <Button
         android:id="@+id/addMedicineButton"
-        android:layout_width="68dp"
-        android:layout_height="53dp"
+        android:layout_width="76dp"
+        android:layout_height="67dp"
         android:background="@drawable/add_bg"
         android:onClick="showAddMedicineDialog"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintHorizontal_bias="0.941"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.896" />
+        app:layout_constraintVertical_bias="0.906" />
 
     <ListView
         android:id="@+id/medicineListView"

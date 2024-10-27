@@ -8,6 +8,7 @@
     <TextView
         android:id="@+id/serviceName"
         android:layout_width="0dp"
+        android:fontFamily="@font/dm_sans_semibold"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="18sp" />

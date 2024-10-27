@@ -40,7 +40,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/dm_mono_light"
+        android:fontFamily="@font/dm_sans_black"
         android:text="PRESS THE BUTTON IN CASE
 OF EMERGENCY"
         android:textColor="@color/white"
@@ -57,7 +57,7 @@ OF EMERGENCY"
         android:layout_height="58dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/button_background"
-        android:fontFamily="@font/purple_purse"
+        android:fontFamily="@font/dm_sans_black"
         android:onClick="menu"
         android:paddingStart="32dp"
         android:paddingTop="12dp"
@@ -73,7 +73,7 @@ OF EMERGENCY"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.93" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/logoutButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
