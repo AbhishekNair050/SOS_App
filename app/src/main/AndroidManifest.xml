@@ -10,9 +10,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -61,6 +63,10 @@
         <activity android:name=".Medication"
             android:exported="true" />
         <activity android:name=".EmergencyLocation"
+            android:exported="true" />
+        <activity android:name=".geofence_list"
+            android:exported="true" />
+        <activity android:name=".geofencing"
             android:exported="true" />
 
         <meta-data

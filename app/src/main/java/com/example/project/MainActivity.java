@@ -52,8 +52,10 @@ public class MainActivity extends AppCompatActivity {
         );
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        sessionManager = new SessionManager(this);
+
         createNotificationChannel();
+
+        sessionManager = new SessionManager(this);
 
         if (sessionManager.isLoggedIn()) {
             Intent intent = new Intent(this, home.class);

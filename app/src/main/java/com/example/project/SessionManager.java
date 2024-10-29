@@ -1,4 +1,3 @@
-// SessionManager.java
 package com.example.project;
 
 import android.content.Context;
@@ -19,6 +18,8 @@ public class SessionManager {
     private static final String KEY_SOS_MESSAGE = "sosMessage";
     private static final String KEY_CONTACTS = "contacts";
     private static final String KEY_MEDICINES = "medicines";
+    private static final String KEY_GEOFENCES = "geofences";
+    private static final String KEY_SELECTED_GEOFENCE = "selectedGeofence";
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private Context context;
@@ -91,12 +92,36 @@ public class SessionManager {
         editor.commit();
     }
 
+    public void saveGeofences(ArrayList<String> geofences) {
+        Gson gson = new Gson();
+        String json = gson.toJson(geofences);
+        editor.putString(KEY_GEOFENCES, json);
+        editor.commit();
+    }
+
+    public ArrayList<String> getGeofences() {
+        Gson gson = new Gson();
+        String json = pref.getString(KEY_GEOFENCES, null);
+        Type type = new TypeToken<ArrayList<String>>() {}.getType();
+        return gson.fromJson(json, type);
+    }
+
+    public void saveSelectedGeofence(int position) {
+        editor.putInt(KEY_SELECTED_GEOFENCE, position);
+        editor.commit();
+    }
+
+    public int getSelectedGeofence() {
+        return pref.getInt(KEY_SELECTED_GEOFENCE, -1);
+    }
+
     public void saveDataToFirebase(String userId) {
         Map<String, Object> data = new HashMap<>();
         data.put(KEY_EMAIL, getUserEmail());
         data.put(KEY_SOS_MESSAGE, getSOSMessage());
         data.put(KEY_CONTACTS, getContacts());
         data.put(KEY_MEDICINES, getMedicines());
+        data.put(KEY_GEOFENCES, getGeofences());
 
         databaseReference.child(userId).setValue(data)
                 .addOnSuccessListener(aVoid -> {
@@ -118,6 +143,8 @@ public class SessionManager {
                         editor.putString(KEY_CONTACTS, contactsJson);
                         String medicinesJson = gson.toJson(dataSnapshot.child(KEY_MEDICINES).getValue());
                         editor.putString(KEY_MEDICINES, medicinesJson);
+                        String geofencesJson = gson.toJson(dataSnapshot.child(KEY_GEOFENCES).getValue());
+                        editor.putString(KEY_GEOFENCES, geofencesJson);
                         editor.commit();
                     }
                 })

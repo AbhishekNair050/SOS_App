@@ -141,4 +141,8 @@ public class menu extends AppCompatActivity {
         Intent intent = new Intent(this, EmergencyLocation.class);
         startActivity(intent);
     }
+    public void Geofencing(View view) {
+        Intent intent = new Intent(this, geofence_list.class);
+        startActivity(intent);
+    }
 }

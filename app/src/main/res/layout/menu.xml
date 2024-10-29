@@ -41,6 +41,7 @@
         android:layout_width="114dp"
         android:layout_height="119dp"
         android:background="@drawable/transparent_btn"
+        android:onClick="Geofencing"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.865"
