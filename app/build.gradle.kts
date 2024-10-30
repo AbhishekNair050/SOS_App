@@ -53,7 +53,6 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.google.firebase:firebase-database:20.0.5")
-    implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
     implementation("com.google.android.gms:play-services-maps:18.0.2")

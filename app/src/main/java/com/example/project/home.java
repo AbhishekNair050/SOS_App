@@ -19,6 +19,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 public class home extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private static final int REQUEST_SEND_SMS_PERMISSION = 2;
+    private static final int PERMISSION_REQUEST_SEND_SMS = 123;
     private SessionManager sessionManager;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -46,11 +48,18 @@ public class home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.homepage);
+        Intent serviceIntent = new Intent(this, LocationService.class);
+        startService(serviceIntent);
 
         sessionManager = new SessionManager(this);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Check and request SMS permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, PERMISSION_REQUEST_SEND_SMS);
+        }
 
         String email = getIntent().getStringExtra("email");
         FirebaseUser user = mAuth.getCurrentUser();
@@ -134,7 +143,8 @@ public class home extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
             }
-        } else if (requestCode == REQUEST_SEND_SMS_PERMISSION) {
+        }
+        else if (requestCode == REQUEST_SEND_SMS_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 String sosMessage = sessionManager.getSOSMessage();
                 fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {

@@ -76,6 +76,14 @@ public class geofencing extends AppCompatActivity implements OnMapReadyCallback 
                     resultIntent.putExtra("longitude", currentLatLng.longitude);
                     resultIntent.putExtra("radius", radiusSeekBar.getProgress());
                     setResult(RESULT_OK, resultIntent);
+
+
+                    // Start LocationService
+                    Intent serviceIntent = new Intent(geofencing.this, LocationService.class);
+                    serviceIntent.putExtra("latitude", currentLatLng.latitude);
+                    serviceIntent.putExtra("longitude", currentLatLng.longitude);
+                    serviceIntent.putExtra("radius", radiusSeekBar.getProgress());
+                    startService(serviceIntent);
                     finish();
                 }
             }
