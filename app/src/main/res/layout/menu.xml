@@ -10,17 +10,16 @@
 
     <Button
         android:id="@+id/instructionButton"
-        android:layout_width="112dp"
-        android:layout_height="118dp"
+        android:layout_width="135dp"
+        android:layout_height="129dp"
         android:background="@drawable/transparent_btn"
         android:onClick="instructions"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.135"
+        app:layout_constraintHorizontal_bias="0.088"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.126" />
-
+        app:layout_constraintVertical_bias="0.128" />
 
     <Button
         android:id="@+id/ContactButton"
@@ -114,5 +113,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.942" />
+
+    <TextView
+        android:id="@+id/torch"
+        android:layout_width="110dp"
+        android:layout_height="35dp"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/imageViewFlashLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewEmergencyService"
+        app:layout_constraintVertical_bias="0.58" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

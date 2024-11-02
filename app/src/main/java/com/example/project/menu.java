@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -104,12 +105,13 @@ public class menu extends AppCompatActivity {
 
     public void toggleTorch(View view) {
         Button button = (Button) view;
+        TextView textView = findViewById(R.id.torch);
         if (isTorchOn) {
             stopBlinking();
-            button.setText("Flashlight");
+            textView.setText("");
         } else {
             startBlinking();
-            button.setText("Flashlight On");
+            textView.setText("Flashlight On");
         }
         isTorchOn = !isTorchOn;
     }

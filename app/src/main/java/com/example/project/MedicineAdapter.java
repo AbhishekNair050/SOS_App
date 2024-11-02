@@ -1,6 +1,6 @@
-// app/src/main/java/com/example/project/MedicineAdapter.java
 package com.example.project;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,9 +37,16 @@ public class MedicineAdapter extends ArrayAdapter<Medicine> {
         timings.setText(medicine.getTimings().toString());
 
         deleteButton.setOnClickListener(v -> {
-            medicines.remove(position);
-            sessionManager.saveMedicines(medicines);
-            notifyDataSetChanged();
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Delete Medicine")
+                    .setMessage("Are you sure you want to delete this medicine?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        medicines.remove(position);
+                        sessionManager.saveMedicines(medicines);
+                        notifyDataSetChanged();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         });
 
         return convertView;

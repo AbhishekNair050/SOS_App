@@ -26,8 +26,8 @@
 
     <Button
         android:id="@+id/addMedicineButton"
-        android:layout_width="76dp"
-        android:layout_height="67dp"
+        android:layout_width="66dp"
+        android:layout_height="64dp"
         android:background="@drawable/add_bg"
         android:onClick="showAddMedicineDialog"
         app:layout_constraintBottom_toBottomOf="parent"
