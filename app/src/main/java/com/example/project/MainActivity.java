@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -146,6 +147,15 @@ public class MainActivity extends AppCompatActivity {
         EditText et2 = findViewById(R.id.PasswordInput);
         String email = et1.getText().toString();
         String password = et2.getText().toString();
+
+        if (TextUtils.isEmpty(email)) {
+            et1.setError("Email is Required.");
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            et2.setError("Password is Required.");
+            return;
+        }
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {

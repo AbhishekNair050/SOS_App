@@ -86,12 +86,9 @@ public class home extends AppCompatActivity {
             return insets;
         });
 
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        findViewById(R.id.SOSButton).setOnClickListener(v ->
+        {
 
-        findViewById(R.id.SOSButton).setOnClickListener(v -> {
-            if (vibrator != null && vibrator.hasVibrator()) {
-                vibrator.vibrate(5000); // Vibrate for 1000 milliseconds (1 second)
-            }
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
@@ -114,9 +111,22 @@ public class home extends AppCompatActivity {
                     String sosMessage = sessionManager.getSOSMessage();
                     if (ActivityCompat.checkSelfPermission(home.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(home.this, new String[]{Manifest.permission.SEND_SMS}, REQUEST_SEND_SMS_PERMISSION);
-                    } else {
+                    }
+                    else
+                    {
                         ArrayList<Contact> contacts = sessionManager.getContacts();
-                        sendSmsToContacts(sosMessage + " " + locationLink, contacts);
+                        if (contacts.isEmpty())
+                        {
+                            Toast.makeText(home.this, "Please add a contact number to send SOS message.", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            sendSmsToContacts(sosMessage + " " + locationLink, contacts);
+                            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            if (vibrator != null && vibrator.hasVibrator()) {
+                                vibrator.vibrate(2000); // Vibrate for 5000 milliseconds (5 seconds)
+                            }
+                        }
                     }
                 } else {
                     Toast.makeText(home.this, "Failed to get location", Toast.LENGTH_SHORT).show();

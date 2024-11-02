@@ -18,7 +18,8 @@ public class SplashActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         new Handler().postDelayed(new Runnable() {
             @Override
-            public void run() {
+            public void run()
+            {
                 // Start your main activity after the splash screen duration
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);
