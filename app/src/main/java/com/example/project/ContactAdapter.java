@@ -55,11 +55,17 @@ public class ContactAdapter extends BaseAdapter {
 
         editButton.setOnClickListener(v -> showEditContactPopup(position));
         deleteButton.setOnClickListener(v -> {
-            contacts.remove(position);
-            notifyDataSetChanged();
-            sessionManager.saveContacts(contacts); // Save updated contacts list to SessionManager
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage("Are you sure you want to delete this contact?")
+                    .setPositiveButton("Yes", (dialog, id) -> {
+                        contacts.remove(position);
+                        notifyDataSetChanged();
+                        sessionManager.saveContacts(contacts); // Save updated contacts list to SessionManager
+                    })
+                    .setNegativeButton("No", (dialog, id) -> dialog.dismiss());
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         });
-
         return convertView;
     }
 
