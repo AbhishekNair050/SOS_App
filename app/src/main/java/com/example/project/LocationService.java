@@ -7,13 +7,16 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Handler;
 import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.util.Log;
-
+import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
@@ -25,18 +28,22 @@ import com.google.android.gms.location.LocationServices;
 
 public class LocationService extends Service {
 
-    private static final double LAT1 = 19.1695772;  // Center latitude
-    private static final double LON1 = 72.8692397;  // Center longitude
-    private static final double RADIUS = 100;       // Radius in meters
-    private static final String PHONE_NUMBER = "9930508280"; // SMS recipient
+    private static double LAT1; // Center latitude
+    private static double LON1; // Center longitude
+    private static double RADIUS; // Radius in meters
+    private static final String PHONE_NUMBER = "9137027042"; // SMS recipient
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
+    private Handler handler;
+    private Runnable smsRunnable;
+    private boolean isOutsideGeofence = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        handler = new Handler();
         startForegroundService();
         startLocationUpdates();
     }
@@ -66,6 +73,18 @@ public class LocationService extends Service {
                 .setFastestInterval(2000)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
+        Geofence selectedGeofence = sessionManager.getSelectedGeofence();
+
+        if (selectedGeofence != null) {
+            LAT1 = selectedGeofence.getLatitude();
+            LON1 = selectedGeofence.getLongitude();
+            RADIUS = selectedGeofence.getRadius();
+        } else {
+            Log.e("LocationService", "No selected geofence found.");
+            return;
+        }
+
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -76,7 +95,15 @@ public class LocationService extends Service {
                     double distance = calculateDistance(LAT1, LON1, currentLat, currentLon);
 
                     if (distance > RADIUS) {
-                        sendSms(PHONE_NUMBER, "Alert: Moved out of geofence.");
+                        if (!isOutsideGeofence) {
+                            isOutsideGeofence = true;
+                            startSmsTask();
+                        }
+                    } else {
+                        if (isOutsideGeofence) {
+                            isOutsideGeofence = false;
+                            stopSmsTask();
+                        }
                     }
                 }
             }
@@ -110,15 +137,96 @@ public class LocationService extends Service {
         }
     }
 
+    private void startSmsTask() {
+        smsRunnable = new Runnable() {
+            @Override
+            public void run() {
+                sendSms(PHONE_NUMBER, "Alert: Moved out of geofence.");
+                handler.postDelayed(this, 30000); // Schedule next SMS in 30 seconds
+            }
+        };
+        handler.post(smsRunnable); // Start the task immediately
+    }
+
+    private void stopSmsTask() {
+        if (smsRunnable != null) {
+            handler.removeCallbacks(smsRunnable);
+        }
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            String action = intent.getAction();
+            if ("UPDATE_GEOFENCE".equals(action)) {
+                LAT1 = intent.getDoubleExtra("latitude", LAT1);
+                LON1 = intent.getDoubleExtra("longitude", LON1);
+                RADIUS = intent.getIntExtra("radius", (int) RADIUS);
+                restartLocationUpdates(); // Update location settings
+                checkInitialLocation(); // Check if the current location is outside the new geofence
+                return START_STICKY;
+            }
+        }
+
+        // Handle the initial call if no action is specified
+        initializeGeofenceFromPreferences();
         return START_STICKY;
+    }
+
+    private void initializeGeofenceFromPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("GeofencePrefs", Context.MODE_PRIVATE);
+        LAT1 = sharedPreferences.getFloat("latitude", 0);
+        LON1 = sharedPreferences.getFloat("longitude", 0);
+        RADIUS = sharedPreferences.getInt("radius", 0);
+
+        if (LAT1 == 0 && LON1 == 0 && RADIUS == 0) {
+            Log.e("LocationService", "No geofence details found.");
+            stopSelf();
+        } else {
+            restartLocationUpdates();
+            checkInitialLocation(); // Check the initial location status
+        }
+    }
+
+    private void restartLocationUpdates() {
+        if (locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+        }
+        startLocationUpdates();
+    }
+
+    private boolean isGeofenceListEmpty() {
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
+        ArrayList<Geofence> geofences = sessionManager.getGeofences();
+        return geofences == null || geofences.isEmpty();
+    }
+
+    private void checkInitialLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                if (location != null) {
+                    double currentLat = location.getLatitude();
+                    double currentLon = location.getLongitude();
+                    double distance = calculateDistance(LAT1, LON1, currentLat, currentLon);
+
+                    if (distance > RADIUS) {
+                        isOutsideGeofence = true;
+                        startSmsTask();
+                    } else {
+                        isOutsideGeofence = false;
+                    }
+                }
+            });
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        fusedLocationClient.removeLocationUpdates(locationCallback);
+        if (locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+        }
+        stopSmsTask();
     }
 
     @Override

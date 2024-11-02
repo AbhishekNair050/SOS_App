@@ -43,7 +43,7 @@ public class geofencing extends AppCompatActivity implements OnMapReadyCallback 
         radiusSeekBar = findViewById(R.id.seekBar);
         setRadiusButton = findViewById(R.id.radius);
         geofenceNameEditText = findViewById(R.id.geofenceName);
-
+        radiusSeekBar.setMax(1000);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

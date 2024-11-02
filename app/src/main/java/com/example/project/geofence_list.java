@@ -15,7 +15,7 @@ import java.util.List;
 public class geofence_list extends AppCompatActivity {
 
     private static final int REQUEST_CODE_ADD_GEOFENCE = 1;
-    private List<String> geofences = new ArrayList<>();
+    private List<Geofence> geofences; // Changed to List<Geofence>
     private FenceAdapter adapter;
     private SessionManager sessionManager;
 
@@ -26,7 +26,7 @@ public class geofence_list extends AppCompatActivity {
         setContentView(R.layout.geofence_list);
 
         sessionManager = new SessionManager(this);
-        geofences = sessionManager.getGeofences();
+        geofences = sessionManager.getGeofences(); // Fetching Geofence objects
         if (geofences == null) {
             geofences = new ArrayList<>();
         }
@@ -35,7 +35,7 @@ public class geofence_list extends AppCompatActivity {
         adapter = new FenceAdapter(this, geofences);
         listView.setAdapter(adapter);
 
-        int selectedPosition = sessionManager.getSelectedGeofence();
+        int selectedPosition = sessionManager.getSelectedGeofencePosition();
         if (selectedPosition != -1) {
             adapter.setSelectedPosition(selectedPosition);
         }
@@ -58,13 +58,13 @@ public class geofence_list extends AppCompatActivity {
                 if (selectedPosition != -1 && selectedPosition < geofences.size()) {
                     geofences.remove(selectedPosition);
                     adapter.notifyDataSetChanged();
+                    adapter.setSelectedPosition(geofences.size() - 1); // Select the new geofence
                     saveGeofences();
                 }
             }
         });
     }
 
-    // geofence_list.java
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -75,8 +75,8 @@ public class geofence_list extends AppCompatActivity {
             int radius = data.getIntExtra("radius", 0);
 
             if (geofenceName != null) {
-                String geofenceDetails = geofenceName + " (" + latitude + ", " + longitude + ") - " + radius + "m";
-                geofences.add(geofenceDetails);
+                Geofence newGeofence = new Geofence(geofenceName, latitude, longitude, radius); // Assuming a Geofence constructor
+                geofences.add(newGeofence);
                 adapter.notifyDataSetChanged();
                 saveGeofences();
 
@@ -96,7 +96,11 @@ public class geofence_list extends AppCompatActivity {
     }
 
     private void saveGeofences() {
-        sessionManager.saveGeofences(new ArrayList<>(geofences));
-        sessionManager.saveDataToFirebase(sessionManager.getUserEmail());
+        ArrayList<Geofence> geofenceArrayList = new ArrayList<>(geofences);
+        sessionManager.saveGeofences(geofenceArrayList); // Convert List to ArrayList
+        String userEmail = sessionManager.getUserEmail();
+        if (userEmail != null) {
+            sessionManager.saveDataToFirebase(userEmail);
+        }
     }
 }
