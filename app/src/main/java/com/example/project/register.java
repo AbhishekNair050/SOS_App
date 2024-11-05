@@ -3,6 +3,7 @@ package com.example.project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,6 +16,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -22,16 +29,24 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.OAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Arrays;
 
 public class register extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
+    private DatabaseReference dbRef;
     private GoogleSignInClient mGoogleSignInClient;
+    private CallbackManager mCallbackManager;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +55,10 @@ public class register extends AppCompatActivity {
         setContentView(R.layout.create_account);
 
         mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        mAuth.setLanguageCode("en");
+        dbRef = FirebaseDatabase.getInstance().getReference("users");
+        sessionManager = new SessionManager(this);
+        mCallbackManager = CallbackManager.Factory.create();
 
         // Configure Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -50,7 +68,12 @@ public class register extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         ImageView CreateAccGoogle = findViewById(R.id.imageViewGoogle);
+        ImageView CreateAccFacebook = findViewById(R.id.imageViewFacebook);
+        ImageView CreateAccTwitter = findViewById(R.id.imageViewTwitter);
+
+        CreateAccTwitter.setOnClickListener(v -> signInWithTwitter());
         CreateAccGoogle.setOnClickListener(v -> signIn());
+        CreateAccFacebook.setOnClickListener(v -> signInWithFacebook());
 
         TextView tv = findViewById(R.id.tvp1);
         tv.setOnClickListener(v -> {
@@ -66,14 +89,103 @@ public class register extends AppCompatActivity {
         });
     }
 
+    private void signInWithTwitter() {
+        OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
+
+        Task<AuthResult> pendingResultTask = mAuth.getPendingAuthResult();
+        if (pendingResultTask != null) {
+            pendingResultTask
+                    .addOnSuccessListener(authResult -> handleSignInResult(authResult))
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(register.this, "Twitter login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            mAuth.startActivityForSignInWithProvider(this, provider.build())
+                    .addOnSuccessListener(authResult -> handleSignInResult(authResult))
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(register.this, "Twitter login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
+    private void handleSignInResult(AuthResult authResult) {
+        FirebaseUser user = authResult.getUser();
+        if (user != null) {
+            User newUser = new User(user.getDisplayName(), user.getEmail());
+            dbRef.child(user.getUid()).setValue(newUser)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(register.this, "Twitter login successful", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(register.this, "Error saving user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void signInWithFacebook() {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(register.this, "Facebook login canceled", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(register.this, "Facebook login failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            User newUser = new User(user.getDisplayName(), user.getEmail());
+                            dbRef.child(user.getUid()).setValue(newUser)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(register.this, "Facebook login successful", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(this, home.class);
+                                        sessionManager.createLoginSession(user.getEmail());
+                                        sessionManager.saveUsername(user.getDisplayName());
+//                                        sessionManager.loadDataFromFirebase(user.getUid());
+                                        intent.putExtra("email", user.getEmail());
+                                        intent.putExtra("username", user.getDisplayName());
+                                        startActivity(intent);
+                                        overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(register.this, "Error saving user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                    } else {
+                        Toast.makeText(register.this, "Facebook login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -87,7 +199,6 @@ public class register extends AppCompatActivity {
         }
     }
 
-    // app/src/main/java/com/example/project/register.java
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.fetchSignInMethodsForEmail(acct.getEmail())
@@ -100,13 +211,13 @@ public class register extends AppCompatActivity {
                                         if (signInTask.isSuccessful()) {
                                             FirebaseUser user = mAuth.getCurrentUser();
                                             User newUser = new User(user.getDisplayName(), user.getEmail());
-                                            db.collection("users").document(user.getUid()).set(newUser)
+                                            dbRef.child(user.getUid()).setValue(newUser)
                                                     .addOnSuccessListener(aVoid -> {
                                                         Toast.makeText(register.this, "Account created successfully. Please log in.", Toast.LENGTH_SHORT).show();
                                                         Intent intent = new Intent(this, MainActivity.class);
                                                         startActivity(intent);
                                                         overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
-                                                        finish(); // Close the register activity
+                                                        finish();
                                                     })
                                                     .addOnFailureListener(e -> {
                                                         Toast.makeText(register.this, "Error creating account: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -136,11 +247,13 @@ public class register extends AppCompatActivity {
         String name = ed4.getText().toString();
 
         if (!password.equals(cfmPassword)) {
+            Log.d("RegisterActivity", "Passwords do not match");
             Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (email.isEmpty() || password.isEmpty() || cfmPassword.isEmpty() || name.isEmpty()) {
+            Log.d("RegisterActivity", "Fields are empty");
             Toast.makeText(this, "Please fill in all the fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -149,19 +262,29 @@ public class register extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        User newUser = new User(name, email);
-                        db.collection("users").document(user.getUid()).set(newUser)
-                                .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(register.this, "Account created successfully. Please log in.", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(this, MainActivity.class);
-                                    startActivity(intent);
-                                    overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
-                                    finish(); // Close the register activity
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(register.this, "Error creating account: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                });
+                        if (user != null) {
+                            User newUser = new User(name, email);
+                            dbRef.child(user.getUid()).setValue(newUser)
+                                    .addOnSuccessListener(aVoid -> {
+                                        sessionManager.createLoginSession(email);
+                                        sessionManager.saveUsername(name);
+                                        Log.d("RegisterActivity", "Account created successfully");
+                                        Toast.makeText(register.this, "Account created successfully. Welcome.", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(this, MainActivity.class);
+                                        startActivity(intent);
+                                        overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.d("RegisterActivity", "Error saving user data: " + e.getMessage());
+                                        Toast.makeText(register.this, "Error saving user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Log.d("RegisterActivity", "Error: User is null");
+                            Toast.makeText(register.this, "Error: User is null", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
+                        Log.d("RegisterActivity", "Error creating account: " + task.getException().getMessage());
                         Toast.makeText(register.this, "Error creating account: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

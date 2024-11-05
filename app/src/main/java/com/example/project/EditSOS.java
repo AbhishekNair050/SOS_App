@@ -44,6 +44,10 @@ public class EditSOS extends AppCompatActivity {
             Intent intent = new Intent(EditSOS.this, menu.class);
             startActivity(intent);
         });
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(EditSOS.this, Profile.class);
+            startActivity(intent);
+        });
 
         // Load saved SOS message
         String savedMessage = sessionManager.getSOSMessage();

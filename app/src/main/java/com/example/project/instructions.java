@@ -31,6 +31,11 @@ public class instructions extends AppCompatActivity {
             startActivity(intent);
         });
 
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(instructions.this, Profile.class);
+            startActivity(intent);
+        });
+
 
     }
 }

@@ -1,12 +1,14 @@
 // app/src/main/java/com/example/project/Medication.java
 package com.example.project;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,11 +19,15 @@ import android.widget.ListView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
 public class Medication extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CODE = 100;
     private SessionManager sessionManager;
     private ArrayList<Medicine> medicines;
     private MedicineAdapter adapter;
@@ -32,6 +38,25 @@ public class Medication extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.medication);
 
+        Button home = findViewById(R.id.buttonHome);
+        Button menu = findViewById(R.id.buttonMenu);
+        Button profile = findViewById(R.id.buttonProfile);
+
+        home.setOnClickListener(v -> {
+            Intent intent = new Intent(this, home.class);
+            startActivity(intent);
+        });
+
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(this, menu.class);
+            startActivity(intent);
+        });
+
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Profile.class);
+            startActivity(intent);
+        });
+
         sessionManager = new SessionManager(this);
         medicines = sessionManager.getMedicines();
         if (medicines == null) {
@@ -41,6 +66,30 @@ public class Medication extends AppCompatActivity {
         ListView medicineListView = findViewById(R.id.medicineListView);
         adapter = new MedicineAdapter(this, medicines);
         medicineListView.setAdapter(adapter);
+
+        checkAndRequestPermissions();
+    }
+
+    private void checkAndRequestPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.SCHEDULE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.SCHEDULE_EXACT_ALARM
+            }, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("Medication", "Permissions granted");
+            } else {
+                Log.d("Medication", "Permissions denied");
+            }
+        }
     }
 
     public void showAddMedicineDialog(View view) {
@@ -94,7 +143,7 @@ public class Medication extends AppCompatActivity {
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
             Log.d("Medication", "Scheduled notification for " + medicine.getName() + " at " + calendar.getTime());

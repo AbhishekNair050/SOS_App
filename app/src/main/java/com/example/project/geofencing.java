@@ -46,6 +46,25 @@ public class geofencing extends AppCompatActivity implements OnMapReadyCallback 
         radiusSeekBar.setMax(1000);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        Button home = findViewById(R.id.buttonHome);
+        Button menu = findViewById(R.id.buttonMenu);
+        Button profile = findViewById(R.id.buttonProfile);
+
+        home.setOnClickListener(v -> {
+            Intent intent = new Intent(this, home.class);
+            startActivity(intent);
+        });
+
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(this, menu.class);
+            startActivity(intent);
+        });
+
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Profile.class);
+            startActivity(intent);
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);

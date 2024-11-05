@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,25 @@ public class EmergenceyContact extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.emergencycontacts);
+
+        Button home = findViewById(R.id.buttonHome);
+        Button menu = findViewById(R.id.buttonMenu);
+        Button profile = findViewById(R.id.buttonProfile);
+
+        home.setOnClickListener(v -> {
+            Intent intent = new Intent(this, home.class);
+            startActivity(intent);
+        });
+
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(this, menu.class);
+            startActivity(intent);
+        });
+
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Profile.class);
+            startActivity(intent);
+        });
 
         sessionManager = new SessionManager(this);
         contacts = sessionManager.getContacts();

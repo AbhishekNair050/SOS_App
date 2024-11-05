@@ -1,6 +1,8 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +20,25 @@ public class EmergencyServices extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.emergencyservices);
+
+        Button home = findViewById(R.id.buttonHome);
+        Button menu = findViewById(R.id.buttonMenu);
+        Button profile = findViewById(R.id.buttonProfile);
+
+        home.setOnClickListener(v -> {
+            Intent intent = new Intent(this, home.class);
+            startActivity(intent);
+        });
+
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(this, menu.class);
+            startActivity(intent);
+        });
+
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Profile.class);
+            startActivity(intent);
+        });
 
         ListView listView = findViewById(R.id.listView);
         List<EmergencyService> services = new ArrayList<>();

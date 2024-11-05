@@ -9,12 +9,14 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 public class NotificationReceiver extends BroadcastReceiver {
+    private static final String CHANNEL_ID = "medicineChannel";
+
     @SuppressLint("MissingPermission")
     @Override
     public void onReceive(Context context, Intent intent) {
         String medicineName = intent.getStringExtra("medicineName");
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "medicineChannel")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_medicine)
                 .setContentTitle("Medicine Reminder")
                 .setContentText("Time to take your medicine: " + medicineName)

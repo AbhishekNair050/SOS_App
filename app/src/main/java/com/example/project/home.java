@@ -29,6 +29,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -61,23 +66,11 @@ public class home extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, PERMISSION_REQUEST_SEND_SMS);
         }
 
-        String email = getIntent().getStringExtra("email");
-        FirebaseUser user = mAuth.getCurrentUser();
-
-        if (user != null) {
-            db.collection("users").document(user.getUid()).get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                String userName = document.getString("name");
-                                TextView usernameTextView = findViewById(R.id.usernameTextView);
-                                if (usernameTextView != null) {
-                                    usernameTextView.setText(userName);
-                                }
-                            }
-                        }
-                    });
+        String username = getIntent().getStringExtra("username");
+        String text = "Welcome, " + username;
+        TextView usernameTextView = findViewById(R.id.usernameTextView);
+        if (usernameTextView != null) {
+            usernameTextView.setText(text);
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main2), (v, insets) -> {
@@ -86,14 +79,37 @@ public class home extends AppCompatActivity {
             return insets;
         });
 
-        findViewById(R.id.SOSButton).setOnClickListener(v ->
-        {
-
+        findViewById(R.id.SOSButton).setOnClickListener(v -> {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
             } else {
                 getLocationAndSendSms();
+            }
+        });
+    }
+
+    private void fetchUsernameByEmail(String email) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        usersRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        String username = userSnapshot.child("username").getValue(String.class);
+                        TextView usernameTextView = findViewById(R.id.usernameTextView);
+                        if (usernameTextView != null) {
+                            usernameTextView.setText(username);
+                        }
+                    }
+                } else {
+                    Toast.makeText(home.this, "User not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(home.this, "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -36,6 +36,11 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
@@ -64,9 +69,17 @@ public class MainActivity extends AppCompatActivity {
 
         if (sessionManager.isLoggedIn()) {
             Intent intent = new Intent(this, home.class);
-            intent.putExtra("email", sessionManager.getUserEmail());
-            startActivity(intent);
-            finish();
+            String email = sessionManager.getUserEmail();
+            String username = sessionManager.getUsername();
+
+            if (username == null || username.isEmpty()) {
+                fetchUsernameByEmail(email);
+            } else {
+                intent.putExtra("email", email);
+                intent.putExtra("username", username);
+                startActivity(intent);
+                finish();
+            }
         }
 
         TextView tv = findViewById(R.id.tv4);
@@ -102,6 +115,32 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
+    private void fetchUsernameByEmail(String email) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        usersRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        String username = userSnapshot.child("username").getValue(String.class);
+                        sessionManager.saveUsername(username);
+                        Intent intent = new Intent(MainActivity.this, home.class);
+                        intent.putExtra("email", email);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();

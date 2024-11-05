@@ -2,4 +2,6 @@
     <string name="app_name">Project</string>
     <string name="google_maps_key">AIzaSyDmQEpmt7yIUIyGsZKXq9uupJW1aRdwM2o</string>
     <string name="default_web_client_id">292406745942-fau9tad9seoh1jcvlenh4cqev254m14p.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">9041745889169193</string>
+    <string name="facebook_client_token">7153b8eaa31793e9726d045327d284e0</string>
 </resources>

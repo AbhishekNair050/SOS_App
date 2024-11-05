@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import com.google.android.gms.maps.SupportMapFragment;
+
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,6 +52,25 @@ public class EmergencyLocation extends FragmentActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.emergency_location);
+
+        Button home = findViewById(R.id.buttonHome);
+        Button menu = findViewById(R.id.buttonMenu);
+        Button profile = findViewById(R.id.buttonProfile);
+
+        home.setOnClickListener(v -> {
+            Intent intent = new Intent(this, home.class);
+            startActivity(intent);
+        });
+
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(this, menu.class);
+            startActivity(intent);
+        });
+
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Profile.class);
+            startActivity(intent);
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();

@@ -15,7 +15,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:fontFamily="@font/dm_sans_semibold"
-        android:text="INSTRUCTIONS"
+        android:text="Instructions"
         android:textColor="@color/white"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,7 +37,7 @@
         app:layout_constraintHorizontal_bias="0.752"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.551" />
+        app:layout_constraintVertical_bias="0.528" />
 
     <TextView
         android:id="@+id/textView3"
@@ -112,7 +112,7 @@
         app:layout_constraintHorizontal_bias="0.091"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.818" />
+        app:layout_constraintVertical_bias="0.792" />
 
     <TextView
         android:id="@+id/textView6"

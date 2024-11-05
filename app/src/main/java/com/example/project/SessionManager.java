@@ -18,6 +18,7 @@ public class SessionManager {
     private static final String PREF_NAME = "LoginSession";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_USERNAME = "username";
     private static final String KEY_SOS_MESSAGE = "sosMessage";
     private static final String KEY_CONTACTS = "contacts";
     private static final String KEY_MEDICINES = "medicines";
@@ -140,6 +141,14 @@ public class SessionManager {
     public int getSelectedGeofencePosition() {
         return pref.getInt(KEY_SELECTED_GEOFENCE, -1);
     }
+    public void saveUsername(String username) {
+        editor.putString(KEY_USERNAME, username);
+        editor.commit();
+    }
+
+    public String getUsername() {
+        return pref.getString(KEY_USERNAME, null);
+    }
 
     public void saveDataToFirebase(String userId) {
         Map<String, Object> data = new HashMap<>();
@@ -148,6 +157,7 @@ public class SessionManager {
         data.put(KEY_CONTACTS, getContacts());
         data.put(KEY_MEDICINES, getMedicines());
         data.put(KEY_GEOFENCES, getGeofences());
+        data.put(KEY_USERNAME, getUsername());
 
         databaseReference.child(userId).setValue(data)
                 .addOnSuccessListener(aVoid -> {
@@ -158,12 +168,14 @@ public class SessionManager {
                 });
     }
 
+    // Update loadDataFromFirebase method to include username
     public void loadDataFromFirebase(String userId) {
         databaseReference.child(userId).get()
                 .addOnSuccessListener(dataSnapshot -> {
                     if (dataSnapshot.exists()) {
                         editor.putString(KEY_EMAIL, dataSnapshot.child(KEY_EMAIL).getValue(String.class));
                         editor.putString(KEY_SOS_MESSAGE, dataSnapshot.child(KEY_SOS_MESSAGE).getValue(String.class));
+                        editor.putString(KEY_USERNAME, dataSnapshot.child(KEY_USERNAME).getValue(String.class));
                         Gson gson = new Gson();
                         String contactsJson = gson.toJson(dataSnapshot.child(KEY_CONTACTS).getValue());
                         editor.putString(KEY_CONTACTS, contactsJson != null ? contactsJson : "[]");
