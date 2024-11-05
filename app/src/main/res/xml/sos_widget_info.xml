@@ -1,0 +1,6 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/sos_widget"
+    android:minWidth="200dp"
+    android:minHeight="100dp"
+    android:updatePeriodMillis="86400000"
+    android:widgetCategory="home_screen" />

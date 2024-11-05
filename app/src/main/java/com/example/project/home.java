@@ -10,10 +10,10 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Vibrator;
-import android.telephony.SmsManager;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Vibrator;
+import android.telephony.SmsManager;
 import android.view.View;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -87,6 +87,11 @@ public class home extends AppCompatActivity {
                 getLocationAndSendSms();
             }
         });
+        // Check if the activity was started by the widget
+        if (getIntent().getBooleanExtra("trigger_sos", false)) {
+            getLocationAndSendSms();
+        }
+
     }
 
     private void fetchUsernameByEmail(String email) {
