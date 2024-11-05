@@ -102,9 +102,30 @@ public class Medication extends AppCompatActivity {
         EditText timings = dialog.findViewById(R.id.timings);
         Button addMedicineButton = dialog.findViewById(R.id.addMedicineButton);
 
+
         addMedicineButton.setOnClickListener(v -> {
             String name = medicineName.getText().toString();
             String dose = dosage.getText().toString();
+            String timesStr = timesPerDay.getText().toString();
+            String timingsStr = timings.getText().toString();
+
+            if (name.isEmpty()) {
+                medicineName.setError("Medicine name is required");
+                return;
+            }
+            if (dose.isEmpty()) {
+                dosage.setError("Dosage is required");
+                return;
+            }
+            if (timesStr.isEmpty()) {
+                timesPerDay.setError("Times per day is required");
+                return;
+            }
+            if (timingsStr.isEmpty()) {
+                timings.setError("Timings are required");
+                return;
+            }
+
             int times = Integer.parseInt(timesPerDay.getText().toString());
             ArrayList<String> timingList = new ArrayList<>(Arrays.asList(timings.getText().toString().split(",")));
 

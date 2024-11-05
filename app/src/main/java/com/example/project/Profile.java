@@ -32,6 +32,25 @@ public class Profile extends AppCompatActivity {
         tvContacts = findViewById(R.id.tvContacts);
         buttonSave = findViewById(R.id.buttonSave);
 
+        Button home = findViewById(R.id.buttonHome);
+        Button menu = findViewById(R.id.buttonMenu);
+        Button profile = findViewById(R.id.buttonProfile);
+
+        home.setOnClickListener(v -> {
+            Intent intent = new Intent(this, home.class);
+            startActivity(intent);
+        });
+
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(this, menu.class);
+            startActivity(intent);
+        });
+
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Profile.class);
+            startActivity(intent);
+        });
+
         // Load data from SessionManager
         usernameEditText.setText(sessionManager.getUsername());
         emailEditText.setText(sessionManager.getUserEmail());

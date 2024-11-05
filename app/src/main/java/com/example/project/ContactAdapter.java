@@ -75,6 +75,9 @@ public class ContactAdapter extends BaseAdapter {
         View dialogView = inflater.inflate(R.layout.popup_add_contact, null);
         builder.setView(dialogView);
 
+        TextView title = dialogView.findViewById(R.id.contactTitle);
+        title.setText("Edit Contact");
+
         EditText contactName = dialogView.findViewById(R.id.contactName);
         EditText contactNumber = dialogView.findViewById(R.id.contactNumber);
         Button saveContactButton = dialogView.findViewById(R.id.saveContactButton);

@@ -82,11 +82,6 @@ public class register extends AppCompatActivity {
             overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
         });
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main1), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
 
     private void signInWithTwitter() {
@@ -165,7 +160,7 @@ public class register extends AppCompatActivity {
                                         Intent intent = new Intent(this, home.class);
                                         sessionManager.createLoginSession(user.getEmail());
                                         sessionManager.saveUsername(user.getDisplayName());
-//                                        sessionManager.loadDataFromFirebase(user.getUid());
+                                        sessionManager.loadDataFromFirebase(user.getUid());
                                         intent.putExtra("email", user.getEmail());
                                         intent.putExtra("username", user.getDisplayName());
                                         startActivity(intent);

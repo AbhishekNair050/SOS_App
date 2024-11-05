@@ -54,6 +54,10 @@ public class EditSOS extends AppCompatActivity {
         editTextSOSMessage.setText(savedMessage);
 
         buttonSaveSOSMessage.setOnClickListener(v -> {
+            if (editTextSOSMessage.getText().toString().isEmpty()) {
+                Toast.makeText(EditSOS.this, "Please enter a message", Toast.LENGTH_SHORT).show();
+                return;
+            }
             String sosMessage = editTextSOSMessage.getText().toString();
             sessionManager.saveSOSMessage(sosMessage);
             Toast.makeText(EditSOS.this, "SOS message saved", Toast.LENGTH_SHORT).show();

@@ -23,6 +23,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -33,9 +39,12 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.OAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,12 +52,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private SessionManager sessionManager;
     private GoogleSignInClient mGoogleSignInClient;
+    private DatabaseReference dbRef;
+    private CallbackManager mCallbackManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +112,11 @@ public class MainActivity extends AppCompatActivity {
         ImageView Facebook = findViewById(R.id.imageViewFacebook);
         ImageView Twitter = findViewById(R.id.imageViewTwitter);
 
+        Facebook.setOnClickListener(v -> signInWithFacebook());
+
         Google.setOnClickListener(v -> signIn());
+
+        Twitter.setOnClickListener(v -> signInWithTwitter());
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -113,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        // Initialize CallbackManager
+        mCallbackManager = CallbackManager.Factory.create();
     }
 
     private void fetchUsernameByEmail(String email) {
@@ -223,6 +244,97 @@ public class MainActivity extends AppCompatActivity {
 
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
+        }
+    }
+    private void signInWithFacebook() {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(MainActivity.this, "Facebook login canceled", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(MainActivity.this, "Facebook login failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            User newUser = new User(user.getDisplayName(), user.getEmail());
+                            dbRef.child(user.getUid()).setValue(newUser)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(MainActivity.this, "Facebook login successful", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(MainActivity.this, home.class);
+                                        sessionManager.createLoginSession(user.getEmail());
+                                        sessionManager.saveUsername(user.getDisplayName());
+                                        sessionManager.loadDataFromFirebase(user.getUid());
+                                        intent.putExtra("email", user.getEmail());
+                                        intent.putExtra("username", user.getDisplayName());
+                                        startActivity(intent);
+                                        overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(MainActivity.this, "Error saving user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "Facebook login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void signInWithTwitter() {
+        OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
+
+        Task<AuthResult> pendingResultTask = mAuth.getPendingAuthResult();
+        if (pendingResultTask != null) {
+            pendingResultTask
+                    .addOnSuccessListener(authResult -> handleSignInResult(authResult))
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(MainActivity.this, "Twitter login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            mAuth.startActivityForSignInWithProvider(this, provider.build())
+                    .addOnSuccessListener(authResult -> handleSignInResult(authResult))
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(MainActivity.this, "Twitter login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
+    private void handleSignInResult(AuthResult authResult) {
+        FirebaseUser user = authResult.getUser();
+        if (user != null) {
+            User newUser = new User(user.getDisplayName(), user.getEmail());
+            dbRef.child(user.getUid()).setValue(newUser)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(MainActivity.this, "Twitter login successful", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(this, home.class);
+                        sessionManager.createLoginSession(user.getEmail());
+                        sessionManager.saveUsername(user.getDisplayName());
+                        intent.putExtra("email", user.getEmail());
+                        intent.putExtra("username", user.getDisplayName());
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(MainActivity.this, "Error saving user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
         }
     }
 }
